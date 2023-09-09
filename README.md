@@ -1,1 +1,1 @@
-# Graphics-Project
+# Graphics-Group-Project
