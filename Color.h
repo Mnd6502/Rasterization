@@ -13,14 +13,9 @@ struct Color {
   float blue;
 
   Color();
-
   Color(float pRed, float pGreen, float pBlue);
-
   void clamp();
-
   Color operator+(const Color &b);
-
   Color operator-(const Color &c);
-
   Color operator*(const float scale);
 };
