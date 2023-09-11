@@ -23,6 +23,7 @@ public:
   void writeToPPM();
   void drawLine_DDA(float x1, float y1, float x2, float y2, Color fillColor);
   void swap(float& x1, float& y1, float& x2, float& y2);
+  bool inRange (float x, float y);
 };
 
 #endif // RASTER_H

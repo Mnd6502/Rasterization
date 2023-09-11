@@ -18,7 +18,15 @@ int main() {
 
   // Testing Raster class
   Raster img = Raster(120, 140, Red);
-  // img.setColorPixel(1, 1, Blue);
+  img.setColorPixel(1, 1, Blue);
+  img.setColorPixel (120, 140, Black);
+  Color ran = Color(0.5, 0.7, 1.0);
+  img.setColorPixel(0, 140, ran);
+  // img.setColorPixel(0,139,Green);
+  img.setColorPixel(120,0, Blue);
+  img.setColorPixel(119,0, White);
+  img.drawLine_DDA(50, -70, 50, 120, Green);
+  img.drawLine_DDA(-50, 10, 200, 10, Green);
   // img.setColorPixel(0,0, Green);
   // img.drawLine_DDA(50, 12, 39, 70, Blue); // Steep line m negative (|m| > 1)
   // //img.drawLine_DDA(39, 70, 50, 12, Green); // Same but swap points
@@ -32,7 +40,6 @@ int main() {
   // // normal line m positive
   // img.drawLine_DDA(20, 20, 70, 30, Green);
   
-  // Color ran = Color(0.5, 0.7, 1.0);
   // img.drawLine_DDA(80, 40, 50, 30, ran);
   // // // normal line m negative
   // // img.drawLine_DDA(30, 30, 70, 10, Green);
@@ -42,6 +49,8 @@ int main() {
 
   // drawing a star
   Color Yellow = Color ( 1.0, 1.0, 0);
+  img.drawLine_DDA(50, 100, 100, 150, Black);
+  img.drawLine_DDA(-20, 10, 50, 150, Blue);
   img.drawLine_DDA(50, 80, 40, 40, Yellow);
   img.drawLine_DDA(60, 40, 50, 80, Yellow);
   img.drawLine_DDA(30,60,60,40, Yellow);
