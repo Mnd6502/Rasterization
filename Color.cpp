@@ -3,20 +3,23 @@
 #include <iostream>
 using namespace std;
 
-Color::Color() {
+Color::Color()
+{
   red = 0.0;
   green = 0.0;
   blue = 0.0;
 }
 
-Color::Color(float pRed, float pGreen, float pBlue) {
+Color::Color(float pRed, float pGreen, float pBlue)
+{
   red = pRed;
   green = pGreen;
   blue = pBlue;
   clamp();
 }
 
-void Color::clamp() {
+void Color::clamp()
+{
   red = fmin(fmax(red, 0), 1);
   green = fmax(green, 0);
   green = fmin(green, 1);
@@ -24,7 +27,8 @@ void Color::clamp() {
   blue = fmin(blue, 1);
 }
 
-Color Color::operator+(const Color &b) {
+Color Color::operator+(const Color &b)
+{
   Color color;
   color.red = this->red + b.red;
   color.green = this->green + b.green;
@@ -33,7 +37,8 @@ Color Color::operator+(const Color &b) {
   return color;
 }
 
-Color Color::operator-(const Color &c) {
+Color Color::operator-(const Color &c)
+{
   Color color;
   color.red = this->red - c.red;
   color.green = this->green - c.green;
@@ -42,7 +47,8 @@ Color Color::operator-(const Color &c) {
   return color;
 }
 
-Color Color::operator*(const float scale) {
+Color Color::operator*(const float scale)
+{
   Color color;
   color.red = this->red * scale;
   color.green = this->green * scale;

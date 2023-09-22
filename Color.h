@@ -1,3 +1,6 @@
+#ifndef COLOR_H
+#define COLOR_H
+
 #include <iostream>
 using namespace std;
 
@@ -13,9 +16,16 @@ struct Color {
   float blue;
 
   Color();
+
   Color(float pRed, float pGreen, float pBlue);
+
   void clamp();
+
   Color operator+(const Color &b);
+
   Color operator-(const Color &c);
+
   Color operator*(const float scale);
 };
+
+#endif // COLOR_H

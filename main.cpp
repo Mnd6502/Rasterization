@@ -1,60 +1,31 @@
 #include "Raster.h"
+#include "Vector2.h"
 #include <iostream>
 using namespace std;
 
+void printVector(Vector2 v) {
+  cout << v.x << "   " << v.y << endl;
+}
+
 int main() {
+  // Vector2 v = Vector2(2,5);
+  // Vector2 a = Vector2(3,1);
+  // printVector(v + a);
+  // printVector(v - a);
+  // printVector(v * 2.0);
+  // cout << "v dot a" << v.dot(a) << endl;
+  // cout << "v's magnitude: " << v.magnitude() << endl;
+  // printVector(v.normalize());
+  // printVector(v.perpendicular());
 
-  // Testing Color struct
-  // Color c1 = Color(1.0f, 0.25f, 0.25f);
-  // Color c2 = Color(0.0f, 0.5f, 1.0f);
-  // Color c3 = c1 * 2.0;
-  // Color c3 = 2.0 * c1;
-  //  Note: Color * float and not float * Color. Why ?
-  //  The expression will find if an overload of the operator   //  is defined
-  //  in the class of the variable on the left. class
-  // cout << c3.red << endl;
-  // cout << c3.green << endl;
-  // cout << c3.blue << endl;
-
-  // Testing Raster class
-  Raster img = Raster(120, 140, Red);
-  img.setColorPixel(1, 1, Blue);
-  img.setColorPixel (120, 140, Black);
-  Color ran = Color(0.5, 0.7, 1.0);
-  img.setColorPixel(0, 140, ran);
-  // img.setColorPixel(0,139,Green);
-  img.setColorPixel(120,0, Blue);
-  img.setColorPixel(119,0, White);
-  img.drawLine_DDA(50, -70, 50, 120, Green);
-  img.drawLine_DDA(-50, 10, 200, 10, Green);
-  // img.setColorPixel(0,0, Green);
-  // img.drawLine_DDA(50, 12, 39, 70, Blue); // Steep line m negative (|m| > 1)
-  // //img.drawLine_DDA(39, 70, 50, 12, Green); // Same but swap points
-  // img.drawLine_DDA(10, 70, 10, 20, Black); // Vertical
-  // img.drawLine_DDA(80, 50, 30, 50, Black); // Horizontal
-
-  // // steep line m positive (m > 1)
-  //  img.drawLine_DDA(50, 70, 39, 12, Blue);
-  //  img.drawLine_DDA(20, 20, 50, 60, Blue);
-  //  img.drawLine_DDA(30, 30, 45, 45, Blue);
-  // // normal line m positive
-  // img.drawLine_DDA(20, 20, 70, 30, Green);
-  
-  // img.drawLine_DDA(80, 40, 50, 30, ran);
-  // // // normal line m negative
-  // // img.drawLine_DDA(30, 30, 70, 10, Green);
-
-  // // img.drawLine_DDA();
-  // img.writeToPPM();
-
-  // drawing a star
-  Color Yellow = Color ( 1.0, 1.0, 0);
-  img.drawLine_DDA(50, 100, 100, 150, Black);
-  img.drawLine_DDA(-20, 10, 50, 150, Blue);
-  img.drawLine_DDA(50, 80, 40, 40, Yellow);
-  img.drawLine_DDA(60, 40, 50, 80, Yellow);
-  img.drawLine_DDA(30,60,60,40, Yellow);
-  img.drawLine_DDA(40,40,70,60, Yellow);
-  img.drawLine_DDA(30,60,70,60, Yellow);
-  img.writeToPPM();
+  Raster raster = Raster(100, 100, White);
+  // raster.drawLine_DDA_Interpolated(20, 20, 50, 70, Red, Blue);
+  // raster.drawLine_DDA_Interpolated(20, 20, 120, 20, Red, Green);
+  // raster.drawLine_DDA_Interpolated(20, 20, 20, 50, Red, Blue);
+  // raster.drawLine_DDA_Interpolated(20, 20, 80, 40, Red, Green);
+  // raster.drawLine_DDA_Interpolated(60, 40, 10, 70, Green, Red);
+  // raster.drawLine_DDA_Interpolated(10, 70, 60, 40, Red, Green);
+  Triangle2D triangle(Vector2(2, 15), Vector2(45, 80), Vector2(72, 10), Red, Green, Blue);
+  raster.drawTriangle_Barycentric(triangle);
+  raster.writeToPPM();
 }
