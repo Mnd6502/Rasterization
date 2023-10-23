@@ -2,8 +2,8 @@
 #define RASTER_H
 
 #include "Color.h"
-#include "Vector2.h"
-#include "Triangle2D.h"
+#include "Vector.h"
+#include "Triangle.h"
 #include <iostream>
 using namespace std;
 
@@ -29,7 +29,7 @@ public:
 
   void drawLine_DDA_Interpolated(float x1, float y1, float x2, float y2, Color color1, Color color2);
   void drawTriangle2D_DotProduct(Triangle2D triangle2D);
-  void drawTriangle_Barycentric(Triangle2D T);
+  void drawTriangle3D_Barycentric(Triangle3D T);
 };
 
 #endif // RASTER_H

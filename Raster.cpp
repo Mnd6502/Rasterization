@@ -181,7 +181,8 @@ void Raster::drawTriangle2D_DotProduct(Triangle2D triangle2D) {
   }
 }
 
-void Raster::drawTriangle_Barycentric(Triangle2D T) {
+void Raster::drawTriangle3D_Barycentric(Triangle3D T) {
+  Triangle2D myTri = Triangle2D(T);
   float minX = min(T.v1.x, min(T.v2.x, T.v3.x));
   float maxX = max(T.v1.x, max(T.v2.x, T.v3.x));
   float minY = min(T.v1.y, min(T.v2.y, T.v3.y));
@@ -189,9 +190,9 @@ void Raster::drawTriangle_Barycentric(Triangle2D T) {
   float lambda1, lambda2, lambda3;
   for (int x = round(minX); x <= round(maxX); x++) {
     for (int y = round(minY); y <= round(maxY); y++) {
-      T.calculateBarycentricCoordinates(Vector2(x, y), lambda1, lambda2, lambda3);
+      myTri.calculateBarycentricCoordinates(Vector2(x, y), lambda1, lambda2, lambda3);
       if (lambda1 >= 0 && lambda2 >= 0 && lambda3 >= 0) {
-        Color newColor = T.c1*lambda1 + T.c2*lambda2 + T.c3*lambda3;
+        Color newColor = T.c1 * lambda1 + T.c2 * lambda2 + T.c3 * lambda3;
         setColorPixel(x, y, newColor);
       }
     }

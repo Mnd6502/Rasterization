@@ -1,4 +1,4 @@
-#include "Triangle2D.h"
+#include "Triangle.h"
 
 #include <iostream>
 
@@ -20,6 +20,15 @@ Triangle2D::Triangle2D(Vector2 pV1, Vector2 pV2, Vector2 pV3, Color pC1, Color p
   c1 = pC1;
   c2 = pC2;
   c3 = pC3;
+}
+
+Triangle2D::Triangle2D(Triangle3D t) {
+  v1 = Vector2(t.v1.x, t.v1.y);
+  v2 = Vector2(t.v2.x, t.v2.y);
+  v3 = Vector2(t.v3.x, t.v3.y);
+  c1 = t.c1;
+  c2 = t.c2;
+  c3 = t.c3;
 }
 
 bool Triangle2D::inside(float x, float y) {
@@ -51,4 +60,28 @@ void Triangle2D::calculateBarycentricCoordinates(Vector2 P, float &lambda1, floa
   lambda1 = determinant(v2-v3, P-v3) / determinant(v2-v3, v1-v3);
   lambda2 = determinant(P-v3, v1-v3) / determinant(v2-v3, v1-v3);
   lambda3 = 1 - lambda1 - lambda2;
+}
+
+Triangle3D::Triangle3D(){
+  v1 = Vector4(0.0, 0.0, 0.0, 1.0);
+  v2 = Vector4(0.0, 0.0, 0.0, 1.0);
+  v3 = Vector4(0.0, 0.0, 0.0, 1.0);
+  c1 = White;
+  c2 = White;
+  c3 = White;
+}
+
+Triangle3D::Triangle3D(Vector4 pV1, Vector4 pV2, Vector4 pV3, Color pC1, Color pC2, Color pC3){
+  v1 = pV1;
+  v2 = pV2;
+  v3 = pV3;
+  c1 = pC1;
+  c2 = pC2;
+  c3 = pC3;
+}
+
+void Triangle3D::transform(Matrix4 m){
+  this->v1 = m * v1;
+  this->v2 = m * v2;
+  this->v3 = m * v3;
 }
