@@ -38,6 +38,7 @@ struct Vector4
   float dot(Vector4 v);
   Vector4 normalize();
   Vector4 perpendicular();
+  void print();
 };
 
 float determinant(Vector2 a, Vector2 b);

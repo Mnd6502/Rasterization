@@ -5,8 +5,20 @@ using namespace std;
 
 Matrix4::Matrix4() {
   ix = 1.0;
+  iy = 0.0;
+  iz = 0.0;
+  iw = 0.0;
+  jx = 0.0;
   jy = 1.0;
+  jz = 0.0;
+  jw = 0.0;
+  kx = 0.0;
+  ky = 0.0;
   kz = 1.0;
+  kw = 0.0;
+  ox = 0.0;
+  oy = 0.0;
+  ox = 0.0;
   ow = 1.0;
 }
 
@@ -83,11 +95,11 @@ void Matrix4::print() {
 }
 
 Matrix4 Translate3D(float tX, float tY, float tZ) {
-  Matrix4 matrix4 = Matrix4();
-  matrix4.ox = tX;
-  matrix4.oy = tY;
-  matrix4.oz = tZ;
-  return matrix4;
+  Matrix4 m(  1, 0, 0, tX,
+              0, 1, 0, tY,
+              0, 0, 1, tZ,
+              0, 0, 0, 1);
+  return m;
 }
 
 Matrix4 Scale3D(float sX, float sY, float sZ) {
