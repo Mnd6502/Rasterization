@@ -23,7 +23,8 @@ struct Triangle2D {
 
 struct Triangle3D {
   Vector4 v1, v2, v3;
-  Color c1, c2, c3;  
+  Color c1, c2, c3;
+  bool shouldDraw;
 
   Triangle3D();
   Triangle3D(Vector4 pV1, Vector4 pV2, Vector4 pV3, Color pC1, Color pC2, Color pC3);

@@ -69,6 +69,7 @@ Triangle3D::Triangle3D(){
   c1 = White;
   c2 = White;
   c3 = White;
+  shouldDraw = true;
 }
 
 Triangle3D::Triangle3D(Vector4 pV1, Vector4 pV2, Vector4 pV3, Color pC1, Color pC2, Color pC3){

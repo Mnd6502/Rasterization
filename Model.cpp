@@ -22,7 +22,12 @@ Triangle3D Model::operator[](int i){
 
 void Model::transform(Matrix4 m){
   for(int i = 0; i < numTriangles(); i++) {
-    triangles[i].transform(m);
+    Triangle3D t = triangles[i];
+    if(t.shouldDraw)
+    {
+      t.transform(m);
+      triangles[i] = t;
+    }
   }
 }
 
@@ -38,7 +43,7 @@ void Model::readFromOBJFile(string filepath, Color pFillColor){
       // If line starts with 'v'
       if(line[0] == 'v') {
         Vector4 vertex;
-        vertex.w = 1.0;
+        vertex.w = 1;
         while(getline(s, word, ' ')) {
           if(word != "v") {
             if(tracker == 0) {
@@ -93,5 +98,32 @@ void Model::readFromOBJFile(string filepath, Color pFillColor){
       }
     }
     myFile.close();
+  }
+}
+
+void Model::homogenize(){
+  for (int i = 0; i < numTriangles(); i++)
+  {
+    triangles[i].v1 = triangles[i].v1 * (1/triangles[i].v1.w);
+    triangles[i].v2 = triangles[i].v2 * (1/triangles[i].v2.w);
+    triangles[i].v3 = triangles[i].v3 * (1/triangles[i].v3.w);
+  }
+}
+
+void Model::performBackfaceCulling(Vector4 eye, Vector4 spot){
+  Vector4 look = (spot - eye).normalize();
+  for (int i = 0; i < numTriangles(); i++){
+    Triangle3D t = triangles[i];
+    Vector4 edge1 = t.v3 - t.v2;
+    Vector4 edge2 = t.v1 - t.v2;
+    Vector4 normal = edge2.cross(edge1).normalize();
+    float check = normal.dot(look);
+    if (check >= 0.0){
+      t.shouldDraw = false;
+    }
+    else{
+      t.shouldDraw = true;
+    }
+    triangles[i] = t;
   }
 }

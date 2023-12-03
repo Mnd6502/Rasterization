@@ -1,6 +1,7 @@
 #include "Matrix.h"
-#include <iostream>
 
+#include <iostream>
+//#include <cmath>
 using namespace std;
 
 Matrix4::Matrix4() {
@@ -22,8 +23,9 @@ Matrix4::Matrix4() {
   ow = 1.0;
 }
 
-Matrix4::Matrix4(float ix, float jx, float kx, float ox, float iy, float jy,
-                 float ky, float oy, float iz, float jz, float kz, float oz,
+Matrix4::Matrix4(float ix, float jx, float kx, float ox, 
+                 float iy, float jy, float ky, float oy, 
+                 float iz, float jz, float kz, float oz,
                  float iw, float jw, float kw, float ow) {
   this->ix = ix;
   this->jx = jx;
@@ -95,11 +97,11 @@ void Matrix4::print() {
 }
 
 Matrix4 Translate3D(float tX, float tY, float tZ) {
-  Matrix4 m(  1, 0, 0, tX,
-              0, 1, 0, tY,
-              0, 0, 1, tZ,
-              0, 0, 0, 1);
-  return m;
+  // Matrix4 matrix4 = Matrix4();
+  // matrix4.ox = tX;
+  // matrix4.oy = tY;
+  // matrix4.oz = tZ;
+  return Matrix4(1, 0, 0, tX, 0, 1, 0, tY, 0, 0, 1, tZ, 0, 0, 0, 1);
 }
 
 Matrix4 Scale3D(float sX, float sY, float sZ) {
@@ -155,3 +157,43 @@ Matrix4 Rotate3D(float degrees, Vector4 vec) {
   return Rot_Alp * (Rot_Bet * (RotAround * (RotBet * RotAlp)));
 }
 
+Matrix4 LookAt(Vector4 eye, Vector4 spot, Vector4 up) {
+  Vector4 look = (spot - eye).normalize();
+  Vector4 right = look.cross(up).normalize();
+  Vector4 up2 = right.cross(look).normalize();
+  Matrix4 step1 = Translate3D(-eye.x, -eye.y, -eye.z);
+  Matrix4 step2(  right.x,  right.y,  right.z,  0,
+                  up2.x, up2.y, up2.z,  0,
+                  -look.x, -look.y, -look.z,  0,
+                  0, 0, 0, 1);
+  Matrix4 view = step2 * step1;
+  return view;
+}
+
+Matrix4 Orthographic(float minX, float maxX, float minY,float maxY, float minZ,float maxZ){
+  Matrix4 step1 = Translate3D(-(minX+maxX)/2, -(minY+maxY)/2, -(minZ+maxZ)/2);
+  Matrix4 step2 = Scale3D(2/(maxX-minX), 2/(maxY-minY), 2/(maxZ-minZ));
+  Matrix4 orthographic = step2 * step1;
+  return orthographic;
+}
+
+Matrix4 Perspective(float fovY, float aspect, float nearZ, float farZ){
+  // float f = 1.0f/tanf(fovY/2);
+  float radians = fovY * M_PI / 180.0;
+  float f = 1.0f/tanf(radians/2);
+  Matrix4 perspective( f/ aspect, 0, 0, 0,
+                        0, f, 0, 0,
+                        0, 0, (farZ+nearZ)/(nearZ-farZ), 2*nearZ*farZ/(nearZ-farZ),
+                        0, 0, -1, 0);
+  return perspective;
+}
+
+Matrix4 Viewport(float x, float y, float width, float height){
+
+  Matrix4 step1 = Translate3D(1, 1, -1);
+  Matrix4 step2 = Scale3D(0.5, 0.5, 0.5);
+  Matrix4 step3 = Scale3D(width, height, 1);
+  Matrix4 step4 = Translate3D(x, y, 0);
+  Matrix4 viewport = step4 * step3 * step2 * step1;
+  return viewport;
+}

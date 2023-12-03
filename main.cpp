@@ -1,8 +1,13 @@
+#include "Matrix.h"
 #include "Raster.h"
 #include "Vector.h"
-#include "Matrix.h"
+#include "Model.h"
+#include "Color.h"
 #include <iostream>
 using namespace std;
+
+#define WIDTH 100
+#define HEIGHT 100
 
 void printVector(Vector2 v)
 {
@@ -11,7 +16,12 @@ void printVector(Vector2 v)
 
 int main()
 {
-
+  // Matrix4 testTranslate = Translate3D(1, 2, 3);
+  // Triangle3D triangle = Triangle3D(Vector4(0, 0, 0, 1), Vector4(7, 4, 0, 1),
+  //                                  Vector4(1, 5, 10, 1), White, White, White);
+  // triangle.transform(testTranslate);
+  // cout << triangle.v2.x << "   " << triangle.v2.y << "   " << triangle.v2.z
+  //      << endl;
   // Matrix4 A(1 , 2 , 3 , 4 ,
   //  5 , 6 , 7 , 8 ,
   //  9 , 10 , 11 , 12 ,
@@ -32,23 +42,20 @@ int main()
   // printVector(v.normalize());
   // printVector(v.perpendicular());
 
-  Raster myRaster = Raster(100, 100, White);
-  /* Test triangle */
-  // Triangle3D t(Vector4(0, 0, 0, 1), Vector4(40, 0, 0, 1), Vector4(40, 40, 0, 1), Red, Blue, Green);
-  // Matrix4 m = Scale3D(0.5, 0.5, 1);
-  // cout << "Before: " << t.v2.y << "< " << t.v3.y << endl;
-  // t.transform(m);
-  // cout << "After: " << t.v2.y << "< " << t.v3.y << endl;
-  // myRaster.drawTriangle3D_Barycentric(t);
+  // Raster myRaster = Raster(100, 100, White);
+  // Triangle3D t(Vector4(0,0,0,1), Vector4(40,0,0,1), Vector4(40,40,0,1), Red,
+  // Blue, Green);
+  // Model teapot = Model();
+  // teapot.readFromOBJFile("./teapot.obj", Red);
+  // Matrix4 m = Translate3D(50, 50, 0) * RotateZ3D(-45.0) * Scale3D(0.5, 0.5, 0.5);
+  // // Matrix4 m =
+  // //     Translate3D(50, 50, 0) * RotateZ3D(-45.0) * Scale3D(0.5, 0.5, 0.5);
+  // teapot.transform(m);
+  // myRaster.drawModel(teapot);
+  // // t.transform(m);
+  // // m.print();
+  // // myRaster.drawTriangle3D_Barycentric(t);
   // myRaster.writeToPPM();
-
-  /* Test 3D model */
-  Model teapot = Model();
-  teapot.readFromOBJFile("./teapot.obj", Red);
-  Matrix4 m = Translate3D(50, 50, 0) * RotateZ3D(-45.0) * Scale3D(0.5, 0.5, 1);
-  teapot.transform(m);
-  myRaster.drawModel(teapot);
-  myRaster.writeToPPM();
 
   // raster.drawLine_DDA_Interpolated(20, 20, 50, 70, Red, Blue);
   // raster.drawLine_DDA_Interpolated(20, 20, 120, 20, Red, Green);
@@ -56,4 +63,60 @@ int main()
   // raster.drawLine_DDA_Interpolated(20, 20, 80, 40, Red, Green);
 
   // raster.writeToPPM();
+
+  Raster myRaster(WIDTH, HEIGHT, White);
+
+  Model teapot, bunny;
+  teapot.readFromOBJFile("./teapot.obj", Red);
+  bunny.readFromOBJFile("./bunny.obj", Blue);
+
+  Matrix4 modelMatrixTeapot =
+      Translate3D(50, 50, -30) *
+      RotateZ3D(45.0) *
+      Scale3D(0.5, 0.5, 0.5);
+
+  // Matrix4 modelMatrixBunny =
+  //     Translate3D(70, 30, -60)*
+  //     RotateZ3D(-20.0) *
+  //     Scale3D(500, 500, 500);
+
+  Vector4 eye(50, 50, 30, 1);
+  Vector4 spot(50, 50, -30, 1);
+  teapot.performBackfaceCulling(eye, spot);
+
+  Matrix4 viewMatrix = LookAt(
+      eye,
+      spot,
+      Vector4(0, 1, 0, 0));
+
+  Matrix4 perspectiveMatrix = Perspective(
+      70.0,
+      myRaster.getWidth() / myRaster.getHeight(),
+      0.01,
+      88.5);
+
+  Matrix4 viewportMatrix = Viewport(
+      0,
+      0,
+      myRaster.getWidth(),
+      myRaster.getHeight());
+
+  teapot.transform(perspectiveMatrix * viewMatrix * modelMatrixTeapot);
+  // bunny.transform(perspectiveMatrix*viewMatrix*modelMatrixBunny);
+
+  teapot.homogenize();
+  // bunny.homogenize();
+
+  teapot.transform(viewportMatrix);
+  // bunny.transform(viewportMatrix);
+
+  myRaster.drawModel(teapot);
+  // myRaster.drawModel(bunny);
+
+  // teapot.transform(perspectiveMatrix * viewMatrix * modelMatrixTeapot);
+  // teapot.homogenize();
+  // teapot.transform(viewportMatrix);
+  // myRaster.drawModel(teapot);
+
+  myRaster.writeToPPM();
 }

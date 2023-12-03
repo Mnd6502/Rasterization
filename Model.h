@@ -17,6 +17,9 @@ public:
   Triangle3D operator[](int i);
   void transform(Matrix4 m);
   void readFromOBJFile(string filepath, Color pFillColor);
+  void homogenize();
+
+  void performBackfaceCulling(Vector4 eye, Vector4 spot);
 };
 
 #endif // MODEL_H

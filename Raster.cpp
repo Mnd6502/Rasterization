@@ -1,5 +1,6 @@
 #include "Raster.h"
 #include <cmath>
+#include <limits>
 #include <fstream>
 #include <iostream>
 using namespace std;
@@ -9,6 +10,7 @@ Raster::Raster()
   width = 0;
   height = 0;
   pixels = NULL;
+  depthPixels = NULL;
 }
 
 Raster::Raster(int pWidth, int pHeight, Color pFillColor)
@@ -16,17 +18,29 @@ Raster::Raster(int pWidth, int pHeight, Color pFillColor)
   width = pWidth;
   height = pHeight;
   pixels = new Color[width * height];
+  depthPixels = new float[width * height];
   for (int i = 0; i < width * height; i++)
   {
     pixels[i] = pFillColor;
+    depthPixels[i] = numeric_limits<float>::max();
   };
 }
 
-Raster::~Raster() { delete[] pixels; }
+Raster::~Raster()
+{
+  delete[] pixels;
+  delete[] depthPixels;
+}
 
 int Raster::getWidth() { return width; }
 
 int Raster::getHeight() { return height; }
+
+float Raster::getDepthPixel(int x, int y)
+{
+  int target = width * (height - 1 - y) + x;
+  return depthPixels[target];
+}
 
 Color Raster::getColorPixel(int x, int y)
 {
@@ -43,6 +57,22 @@ void Raster::setColorPixel(int x, int y, Color pFillColor)
   }
 }
 
+void Raster::setDepthPixel(int x, int y, float depth)
+{
+  if (inRange(x, y))
+  {
+    int target = width * (height - 1 - y) + x;
+    depthPixels[target] = depth;
+  }
+}
+
+void Raster::clear(float depth)
+{
+  for (int i = 0; i < width * height; i++)
+  {
+    depthPixels[i] = depth;
+  }
+}
 void Raster::clear(Color pFillColor)
 {
   for (int i = 0; i < width * height; i++)
@@ -224,9 +254,10 @@ void Raster::drawTriangle2D_DotProduct(Triangle2D triangle2D)
   }
 }
 
-void Raster::drawTriangle3D_Barycentric(Triangle3D myTri)
+void Raster::drawTriangle3D_Barycentric(Triangle3D T)
 {
-  Triangle2D T = Triangle2D(myTri);
+  if(!T.shouldDraw) {return; }
+  Triangle2D myTri = Triangle2D(T);
   float minX = min(T.v1.x, min(T.v2.x, T.v3.x));
   float maxX = max(T.v1.x, max(T.v2.x, T.v3.x));
   float minY = min(T.v1.y, min(T.v2.y, T.v3.y));
@@ -236,11 +267,17 @@ void Raster::drawTriangle3D_Barycentric(Triangle3D myTri)
   {
     for (int y = round(minY); y <= round(maxY); y++)
     {
-      T.calculateBarycentricCoordinates(Vector2(x, y), lambda1, lambda2, lambda3);
+      myTri.calculateBarycentricCoordinates(Vector2(x, y), lambda1, lambda2, lambda3);
       if (lambda1 >= 0 && lambda2 >= 0 && lambda3 >= 0)
       {
-        Color newColor = T.c1 * lambda1 + T.c2 * lambda2 + T.c3 * lambda3;
-        setColorPixel(x, y, newColor);
+        float newZ = T.v1.z * lambda1 + T.v2.z * lambda2 + T.v3.z * lambda3;
+        float currZ = getDepthPixel(x, y);
+        if (currZ > newZ)
+        {
+          setDepthPixel(x, y, newZ);
+          Color newColor = T.c1 * lambda1 + T.c2 * lambda2 + T.c3 * lambda3;
+          setColorPixel(x, y, newColor);
+        }
       }
     }
   }

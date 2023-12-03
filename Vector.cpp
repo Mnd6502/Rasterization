@@ -5,7 +5,7 @@
 using namespace std;
 
 Vector2::Vector2(){
-  x = 0.0;
+  x= 0.0;
   y = 0.0;
 }
 
@@ -121,4 +121,13 @@ Vector4 Vector4::normalize() {
 
 float Vector4::dot(Vector4 v){
   return this->x*v.x + this->y*v.y + this->z*v.z + this->w*v.w;
+}
+
+Vector4 Vector4::cross(Vector4 v) {
+  Vector4 vector4;
+  vector4.x = this->y*v.z - this->z*v.y;
+  vector4.y = this->z*v.x - this->x*v.z;
+  vector4.z = this->x*v.y - this->y*v.x;
+  vector4.w = 0;
+  return vector4;
 }
